@@ -4,6 +4,7 @@ from PIL import Image
 import time
 from functools import reduce
 from collections import Counter
+import math
 import sys
 import os
 
@@ -25,27 +26,33 @@ def writeArrayToFile(imageFilename):
 def compareTwoFilesOfSameSize(file1, file2):
     imageArray1 = convertImageToArray(file1)
     imageArray2 = convertImageToArray(file2)
-    compareTwoImageArrays(imageArray1, imageArray2)
+    return compareTwoImageArrays(imageArray1, imageArray2)
 
 def compareTwoImageArrays(imageArray1, imageArray2):
     if ((len(imageArray1) != len(imageArray2)) or (len(imageArray1[0]) != len(imageArray2[0]))):
         print("error: images not same size")
         return
 
-    counter = 0
+    totalDifferences = 0
+    numPixelsAlike = 0
+
     for row in range(len(imageArray1)):
         for column in range(len(imageArray1[row])):
             pixel1 = imageArray1[row][column]
             pixel2 = imageArray2[row][column]
             if ((len(pixel1) == 4 and pixel1[3] != 255) or (len(pixel2) == 4 and pixel2[3] != 255)):
                 continue
-            rCloseness = abs(int(pixel1[0]) - int(pixel2[0]))
-            gCloseness = abs(int(pixel1[1]) - int(pixel2[1]))
-            bCloseness = abs(int(pixel1[2]) - int(pixel2[2]))
-            counter += rCloseness + gCloseness + bCloseness
+            rDifference = math.pow((int(pixel1[0]) - int(pixel2[0])) / 255, 2)
+            gDifference = math.pow((int(pixel1[1]) - int(pixel2[1])) / 255, 2)
+            bDifference = math.pow((int(pixel1[2]) - int(pixel2[2])) / 255, 2)
+            distance = math.sqrt(rDifference + gDifference + bDifference)
+            totalDifferences += distance
+
+            if (distance < 0.1):
+            	numPixelsAlike += 1
 
     #print(counter)
-    return counter
+    return numPixelsAlike
 
 def getImageChunkFromImageArray(imageArray, startX, startY, size):
     return imageArray[startX:startX+size, startY:startY+size]
@@ -54,7 +61,7 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
     imageArray = convertImageToArray(imageFilename)
     imageSize = len(imageArray)
 
-    lowestNumber = 200000
+    highestLikeness = 0
     lowestRow = 0
     lowestColumn = 0
     
@@ -69,9 +76,9 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
                 continue
             
             puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
-            number = compareTwoImageArrays(imageArray, puzzleChunk)
-            if (number < lowestNumber):
-                lowestNumber = number
+            likeness = compareTwoImageArrays(imageArray, puzzleChunk)
+            if (likeness > highestLikeness):
+                highestLikeness = likeness
                 lowestRow = row
                 lowestColumn = column
 
@@ -114,10 +121,9 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart):
     img = convertArrayToImage(puzzleArray)
     img.show()
 
-
 def main():
-    #compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2])
-    compareImageToPuzzle('waldo-0.png', sys.argv[1])
+    #print(compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2]))
+    compareImageToPuzzle(sys.argv[1], sys.argv[2])
 
 if __name__ == '__main__':
         main()
