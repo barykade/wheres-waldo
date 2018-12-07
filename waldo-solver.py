@@ -35,23 +35,46 @@ def compareTwoImageArrays(imageArray1, imageArray2):
             pixel2 = imageArray2[row][column]
             if ((len(pixel1) == 4 and pixel1[3] != 255) or (len(pixel2) == 4 and pixel2[3] != 255)):
                 continue
-            rCloseness = abs(int(pixel1[0]) - int(pixel2[0])) / 255
-            gCloseness = abs(int(pixel1[1]) - int(pixel2[1])) / 255
-            bCloseness = abs(int(pixel1[2]) - int(pixel2[2])) / 255
-            counter += 1 / (rCloseness + gCloseness + bCloseness)
+            rCloseness = abs(int(pixel1[0]) - int(pixel2[0]))
+            gCloseness = abs(int(pixel1[1]) - int(pixel2[1]))
+            bCloseness = abs(int(pixel1[2]) - int(pixel2[2]))
+            counter += rCloseness + gCloseness + bCloseness
 
-    print(counter)
+    #print(counter)
+    return counter
 
 def getImageChunkFromImageArray(imageArray, startX, startY, size):
     return imageArray[startX:startX+size, startY:startY+size]
 
 def compareImageToPuzzle(imageFilename, puzzleFilename):
     imageArray = convertImageToArray(imageFilename)
+    imageSize = len(imageArray)
+
+    lowestNumber = 200000
+    lowestRow = 0
+    lowestColumn = 0
+    
     puzzleArray = convertImageToArray(puzzleFilename)
-    puzzleChunk = getImageChunkFromImageArray(puzzleArray, 0, 0, len(imageArray))
-    compareTwoImageArrays(imageArray, puzzleChunk)
+    for row in range(len(puzzleArray)):
+        print(row)
+        if (row + imageSize >= len(puzzleArray)):
+            break
+        
+        for column in range(len(puzzleArray[row])):
+            if (column + imageSize >= len(puzzleArray[row])):
+                continue
+            
+            puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
+            number = compareTwoImageArrays(imageArray, puzzleChunk)
+            if (number < lowestNumber):
+                lowestNumber = number
+                lowestRow = row
+                lowestColumn = column
+
+    print('(' + str(row) + ', ' + str(column) + ')')
 
 def main():
+    #compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2])
     compareImageToPuzzle('waldo-0.png', sys.argv[1])
 
 if __name__ == '__main__':
