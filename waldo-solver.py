@@ -57,7 +57,7 @@ def resizeImageArray(imageArray, increment):
 
 	return newImageArray
 
-def compareTwoImageArrays(imageArray1, imageArray2):
+def compareTwoImageArrays(imageArray1, imageArray2, threshold):
 	if ((len(imageArray1) != len(imageArray2)) or (len(imageArray1[0]) != len(imageArray2[0]))):
 		print("error: images not same size")
 		return
@@ -80,7 +80,7 @@ def compareTwoImageArrays(imageArray1, imageArray2):
 			bDifference = math.pow((int(pixel1[2]) - int(pixel2[2])) / 255, 2)
 			distance = math.sqrt(rDifference + gDifference + bDifference)
 
-			if (distance < 0.3):
+			if (distance < threshold):
 				numPixelsAlike += 1
 				totalLikeness += distance
 
@@ -108,7 +108,7 @@ def getAllPossibleContendersForComparison(imageArray, puzzleArray, threshold):
 				continue
 			
 			puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
-			likeness = compareTwoImageArrays(imageArray, puzzleChunk)
+			likeness = compareTwoImageArrays(imageArray, puzzleChunk, 0.3)
 			if (likeness > threshold):
 				possibleCandidates.append([row, column])
 
@@ -128,13 +128,14 @@ def getLikliestCandidateForComparisonWithContenders(imageArray, puzzleArray, inc
 			for column in range(contenderColumn * increment, (contenderColumn + 1) * increment):
 
 				puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
-				likeness = compareTwoImageArrays(imageArray, puzzleChunk)
+				likeness = compareTwoImageArrays(imageArray, puzzleChunk, 0.1)
 				if (likeness > highestLikeness):
 					highestLikeness = likeness
 					lowestRow = row
 					lowestColumn = column
 
 	print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')' + str(highestLikeness))
+	addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn, imageSize)
 
 def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 
@@ -175,6 +176,7 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 def main():
 	#print(compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2]))
 	#compareImageToPuzzle(sys.argv[1], sys.argv[2])
+	
 	imageArrayFull = convertImageToArray(sys.argv[1])
 	puzzleArrayFull = convertImageToArray(sys.argv[2])
 
@@ -183,12 +185,6 @@ def main():
 	contenders = getAllPossibleContendersForComparison(imageArrayTmp, puzzleArrayTmp, 0.3)
 
 	getLikliestCandidateForComparisonWithContenders(imageArrayFull, puzzleArrayFull, 5, contenders)
-
-	#pyplot.imshow(convertImageToArray(sys.argv[2]))
-	#pyplot.show()
-
-	#img = convertArrayToImage(puzzleArray)
-	#img.show()
 
 if __name__ == '__main__':
 		main()
