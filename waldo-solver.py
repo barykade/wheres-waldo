@@ -5,6 +5,7 @@ import time
 from functools import reduce
 from collections import Counter
 import sys
+import os
 
 def convertImageToArray(filename):
     imageFilePath = 'images/' + filename
@@ -13,9 +14,9 @@ def convertImageToArray(filename):
     return imageArray
 
 def writeArrayToFile(imageFilename):
-    writeFile = open('images/' + imageFilename + '.txt','a')
+    imageFilenameNoExt = os.path.splitext(imageFilename)[0]
+    writeFile = open('images/' + imageFilenameNoExt + '.txt','a')
     writeFile.write(str(convertImageToArray(imageFilename).tolist()))
-
 
 def main():
     imageFilename = sys.argv[1]
