@@ -13,6 +13,10 @@ def convertImageToArray(filename):
     imageArray = numpy.asarray(i)
     return imageArray
 
+def convertArrayToImage(array):
+    img = Image.fromarray(array, 'RGB')
+    return img
+
 def writeArrayToFile(imageFilename):
     imageFilenameNoExt = os.path.splitext(imageFilename)[0]
     writeFile = open('images/' + imageFilenameNoExt + '.txt','a')
@@ -72,6 +76,44 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
                 lowestColumn = column
 
     print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')')
+    addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn)
+
+def addBorderAroundWaldo(puzzleArray, rowStart, columnStart):
+
+    puzzleArray.setflags(write=1)
+
+    # Add green border around box
+    green3D = [0, 255, 0]
+    green4D = [0, 255, 0, 255]
+
+    for x in range(50):
+        #top
+        if len(puzzleArray[rowStart, columnStart + x]) == 3:
+            puzzleArray[rowStart, columnStart + x] = green3D
+        else:
+            puzzleArray[rowStart, columnStart + x] = green4D
+
+        #left
+        if len(puzzleArray[rowStart + x, columnStart]) == 3:
+            puzzleArray[rowStart + x, columnStart] = green3D
+        else:
+            puzzleArray[rowStart + x, columnStart] = green4D
+
+        #bottom
+        if len(puzzleArray[rowStart + 50, columnStart + x]) == 3:
+            puzzleArray[rowStart + 50, columnStart + x] = green3D
+        else:
+            puzzleArray[rowStart + 50, columnStart + x] = green4D
+
+        #right
+        if len(puzzleArray[rowStart + x, columnStart + 50]) == 3:
+            puzzleArray[rowStart + x, columnStart + 50] = green3D
+        else:
+            puzzleArray[rowStart + x, columnStart + 50] = green4D
+
+    img = convertArrayToImage(puzzleArray)
+    img.show()
+
 
 def main():
     #compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2])
