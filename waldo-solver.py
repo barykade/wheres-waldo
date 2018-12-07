@@ -33,7 +33,8 @@ def compareTwoImageArrays(imageArray1, imageArray2):
         print("error: images not same size")
         return
 
-    totalDifferences = 0
+    totalLikeness = 0
+    totalPixels = 0
     numPixelsAlike = 0
 
     for row in range(len(imageArray1)):
@@ -42,17 +43,20 @@ def compareTwoImageArrays(imageArray1, imageArray2):
             pixel2 = imageArray2[row][column]
             if ((len(pixel1) == 4 and pixel1[3] != 255) or (len(pixel2) == 4 and pixel2[3] != 255)):
                 continue
+
+            totalPixels += 1
+
             rDifference = math.pow((int(pixel1[0]) - int(pixel2[0])) / 255, 2)
             gDifference = math.pow((int(pixel1[1]) - int(pixel2[1])) / 255, 2)
             bDifference = math.pow((int(pixel1[2]) - int(pixel2[2])) / 255, 2)
             distance = math.sqrt(rDifference + gDifference + bDifference)
-            totalDifferences += distance
 
-            if (distance < 0.1):
+            if (distance < 0.3):
             	numPixelsAlike += 1
+            	totalLikeness += distance
 
-    #print(counter)
-    return numPixelsAlike
+    #print(totalLikeness)
+    return numPixelsAlike / totalPixels
 
 def getImageChunkFromImageArray(imageArray, startX, startY, size):
     return imageArray[startX:startX+size, startY:startY+size]
@@ -66,12 +70,12 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
     lowestColumn = 0
     
     puzzleArray = convertImageToArray(puzzleFilename)
-    for row in range(len(puzzleArray)):
+    for row in range(0, len(puzzleArray), 1):
         print(row)
         if (row + imageSize >= len(puzzleArray)):
             break
         
-        for column in range(len(puzzleArray[row])):
+        for column in range(0, len(puzzleArray[row]), 1):
             if (column + imageSize >= len(puzzleArray[row])):
                 continue
             
@@ -82,7 +86,7 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
                 lowestRow = row
                 lowestColumn = column
 
-    print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')')
+    print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')' + str(highestLikeness))
     addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn)
 
 def addBorderAroundWaldo(puzzleArray, rowStart, columnStart):
