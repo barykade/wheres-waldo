@@ -71,7 +71,7 @@ def compareImageToPuzzle(imageFilename, puzzleFilename):
                 lowestRow = row
                 lowestColumn = column
 
-    print('(' + str(row) + ', ' + str(column) + ')')
+    print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')')
 
 def main():
     #compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2])
