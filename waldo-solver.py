@@ -33,8 +33,10 @@ def compareTwoFilesOfSameSize(file1, file2):
             pixel2 = imageArray2[row][column]
             if (pixel1[3] != 255 or pixel2[3] != 255):
                 continue
-            if (pixel1.all() == pixel2.all()):
-                counter += 1
+            rCloseness = abs(int(pixel1[0]) - int(pixel2[0]))
+            gCloseness = abs(int(pixel1[1]) - int(pixel2[1]))
+            bCloseness = abs(int(pixel1[2]) - int(pixel2[2]))
+            counter += rCloseness + gCloseness + bCloseness
 
     print(counter)
 
