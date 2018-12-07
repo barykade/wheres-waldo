@@ -4,6 +4,7 @@ from PIL import Image
 import time
 from functools import reduce
 from collections import Counter
+import math
 import sys
 import os
 
@@ -35,10 +36,11 @@ def compareTwoImageArrays(imageArray1, imageArray2):
             pixel2 = imageArray2[row][column]
             if ((len(pixel1) == 4 and pixel1[3] != 255) or (len(pixel2) == 4 and pixel2[3] != 255)):
                 continue
-            rCloseness = abs(int(pixel1[0]) - int(pixel2[0]))
-            gCloseness = abs(int(pixel1[1]) - int(pixel2[1]))
-            bCloseness = abs(int(pixel1[2]) - int(pixel2[2]))
-            counter += rCloseness + gCloseness + bCloseness
+            rDifference = math.pow((int(pixel1[0]) - int(pixel2[0])) / 255, 2)
+            gDifference = math.pow((int(pixel1[1]) - int(pixel2[1])) / 255, 2)
+            bDifference = math.pow((int(pixel1[2]) - int(pixel2[2])) / 255, 2)
+            distance = math.sqrt(rDifference + gDifference + bDifference)
+            counter += distance
 
     #print(counter)
     return counter
