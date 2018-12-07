@@ -7,6 +7,7 @@ from collections import Counter
 import math
 import sys
 import os
+import time
 
 def convertImageToArray(filename):
 	imageFilePath = 'images/' + filename
@@ -26,7 +27,7 @@ def writeArrayToFile(imageFilename):
 def compareTwoFilesOfSameSize(file1, file2):
 	imageArray1 = convertImageToArray(file1)
 	imageArray2 = convertImageToArray(file2)
-	return compareTwoImageArrays(imageArray1, imageArray2)
+	return compareTwoImageArrays(imageArray1, imageArray2, 0.1)
 
 def getAveragePixelOfImageArray(imageArray):
 	averageR = 0
@@ -110,7 +111,7 @@ def getAllPossibleContendersForComparison(imageArray, puzzleArray, threshold):
 			puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
 			likeness = compareTwoImageArrays(imageArray, puzzleChunk, 0.3)
 			if (likeness > threshold):
-				possibleCandidates.append([row, column])
+				possibleCandidates.append([row, column, likeness])
 
 	return possibleCandidates
 
@@ -133,6 +134,34 @@ def getLikliestCandidateForComparisonWithContenders(imageArray, puzzleArray, inc
 					highestLikeness = likeness
 					lowestRow = row
 					lowestColumn = column
+
+	print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')' + str(highestLikeness))
+	#addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn, imageSize)
+
+	return [highestLikeness, lowestRow, lowestColumn, imageSize]
+
+def compareImageArrayToPuzzleArray(imageArray, puzzleArray):
+	imageSize = len(imageArray)
+
+	highestLikeness = 0
+	lowestRow = 0
+	lowestColumn = 0
+	
+	for row in range(0, len(puzzleArray), 1):
+		print(row)
+		if (row + imageSize >= len(puzzleArray)):
+			break
+		
+		for column in range(0, len(puzzleArray[row]), 1):
+			if (column + imageSize >= len(puzzleArray[row])):
+				continue
+			
+			puzzleChunk = getImageChunkFromImageArray(puzzleArray, row, column, imageSize)
+			likeness = compareTwoImageArrays(imageArray, puzzleChunk, 0.1)
+			if (likeness > highestLikeness):
+				highestLikeness = likeness
+				lowestRow = row
+				lowestColumn = column
 
 	print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')' + str(highestLikeness))
 	addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn, imageSize)
@@ -174,17 +203,61 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 	img.show()
 
 def main():
+	start = time.time()
 	#print(compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2]))
 	#compareImageToPuzzle(sys.argv[1], sys.argv[2])
 	
-	imageArrayFull = convertImageToArray(sys.argv[1])
+	threshold = float(sys.argv[3])
 	puzzleArrayFull = convertImageToArray(sys.argv[2])
-
-	imageArrayTmp = resizeImageArray(imageArrayFull, 5).astype(int)
 	puzzleArrayTmp = resizeImageArray(puzzleArrayFull, 5).astype(int)
-	contenders = getAllPossibleContendersForComparison(imageArrayTmp, puzzleArrayTmp, 0.3)
 
-	getLikliestCandidateForComparisonWithContenders(imageArrayFull, puzzleArrayFull, 5, contenders)
+	imageArray1Full = convertImageToArray('waldo-hat-1.png')
+	imageArray1Tmp = resizeImageArray(imageArray1Full, 5).astype(int)
+	contenders = getAllPossibleContendersForComparison(imageArray1Tmp, puzzleArrayTmp, threshold)
+	candidate1 = getLikliestCandidateForComparisonWithContenders(imageArray1Full, puzzleArrayFull, 5, contenders)
+	
+	imageArray2Full = convertImageToArray('waldo-hat-2.png')
+	imageArray2Tmp = resizeImageArray(imageArray2Full, 5).astype(int)
+	contenders = getAllPossibleContendersForComparison(imageArray2Tmp, puzzleArrayTmp, threshold)
+	candidate2 = getLikliestCandidateForComparisonWithContenders(imageArray2Full, puzzleArrayFull, 5, contenders)
+	
+	imageArray3Full = convertImageToArray('waldo-hat-3.png')
+	imageArray3Tmp = resizeImageArray(imageArray3Full, 5).astype(int)
+	contenders = getAllPossibleContendersForComparison(imageArray3Tmp, puzzleArrayTmp, threshold)
+	candidate3 = getLikliestCandidateForComparisonWithContenders(imageArray3Full, puzzleArrayFull, 5, contenders)
+	
+	imageArray4Full = convertImageToArray('waldo-hat-4.png')
+	imageArray4Tmp = resizeImageArray(imageArray4Full, 5).astype(int)
+	contenders = getAllPossibleContendersForComparison(imageArray4Tmp, puzzleArrayTmp, threshold)
+	candidate4 = getLikliestCandidateForComparisonWithContenders(imageArray4Full, puzzleArrayFull, 5, contenders)
+
+	highestLikeness = candidate1[0]
+	lowestRow = candidate1[1]
+	lowestColumn = candidate1[2]
+	imageSize = candidate1[3]
+
+	if (candidate2[0] > highestLikeness):
+		highestLikeness = candidate2[0]
+		lowestRow = candidate2[1]
+		lowestColumn = candidate2[2]
+		imageSize = candidate2[3]
+
+	if (candidate3[0] > highestLikeness):
+		highestLikeness = candidate3[0]
+		lowestRow = candidate3[1]
+		lowestColumn = candidate3[2]
+		imageSize = candidate3[3]
+
+	if (candidate4[0] > highestLikeness):
+		highestLikeness = candidate4[0]
+		lowestRow = candidate4[1]
+		lowestColumn = candidate4[2]
+		imageSize = candidate4[3]
+
+	addBorderAroundWaldo(puzzleArrayFull, lowestRow - 10, lowestColumn, imageSize + 20)
+
+	end = time.time()
+	print('Time: ' + str(end - start))
 
 if __name__ == '__main__':
 		main()
