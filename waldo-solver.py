@@ -254,7 +254,7 @@ def main():
 		lowestColumn = candidate4[2]
 		imageSize = candidate4[3]
 
-	addBorderAroundWaldo(puzzleArrayFull, lowestRow - 10, lowestColumn, imageSize + 20)
+	addBorderAroundWaldo(puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
 
 	end = time.time()
 	print('Time: ' + str(end - start))
