@@ -181,11 +181,21 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 		else:
 			puzzleArray[rowStart, columnStart + x] = green4D
 
+		if len(puzzleArray[rowStart + 1, columnStart + x]) == 3:
+			puzzleArray[rowStart + 1, columnStart + x] = green3D
+		else:
+			puzzleArray[rowStart + 1, columnStart + x] = green4D
+
 		#left
 		if len(puzzleArray[rowStart + x, columnStart]) == 3:
 			puzzleArray[rowStart + x, columnStart] = green3D
 		else:
 			puzzleArray[rowStart + x, columnStart] = green4D
+
+		if len(puzzleArray[rowStart + x, columnStart + 1]) == 3:
+			puzzleArray[rowStart + x, columnStart + 1] = green3D
+		else:
+			puzzleArray[rowStart + x, columnStart + 1] = green4D
 
 		#bottom
 		if len(puzzleArray[rowStart + size, columnStart + x]) == 3:
@@ -193,11 +203,21 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 		else:
 			puzzleArray[rowStart + size, columnStart + x] = green4D
 
+		if len(puzzleArray[rowStart + size - 1, columnStart + x]) == 3:
+			puzzleArray[rowStart + size - 1, columnStart + x] = green3D
+		else:
+			puzzleArray[rowStart + size - 1, columnStart + x] = green4D
+
 		#right
 		if len(puzzleArray[rowStart + x, columnStart + size]) == 3:
 			puzzleArray[rowStart + x, columnStart + size] = green3D
 		else:
 			puzzleArray[rowStart + x, columnStart + size] = green4D
+
+		if len(puzzleArray[rowStart + x, columnStart + size - 1]) == 3:
+			puzzleArray[rowStart + x, columnStart + size - 1] = green3D
+		else:
+			puzzleArray[rowStart + x, columnStart + size - 1] = green4D
 
 	img = convertArrayToImage(puzzleArray)
 	img.show()
