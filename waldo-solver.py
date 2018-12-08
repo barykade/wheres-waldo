@@ -162,7 +162,7 @@ def compareImageArrayToPuzzleArray(imageArray, puzzleArray):
 	print('(' + str(lowestRow) + ', ' + str(lowestColumn) + ')' + str(highestLikeness))
 	addBorderAroundWaldo(puzzleArray, lowestRow, lowestColumn, imageSize)
 
-def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
+def addBorderAroundWaldo(filename, puzzleArray, rowStart, columnStart, size):
 
 	puzzleArray.setflags(write=1)
 
@@ -216,6 +216,7 @@ def addBorderAroundWaldo(puzzleArray, rowStart, columnStart, size):
 			puzzleArray[rowStart + x, columnStart + size - 1] = green4D
 
 	img = convertArrayToImage(puzzleArray)
+	img.save('images/' + filename + '_solution.png')
 	img.show()
 
 def main():
@@ -223,8 +224,10 @@ def main():
 	#print(compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2]))
 	#compareImageToPuzzle(sys.argv[1], sys.argv[2])
 	
+	puzzleFilename = sys.argv[1]
+
 	threshold = 0.4
-	puzzleArrayFull = convertImageToArray(sys.argv[1])
+	puzzleArrayFull = convertImageToArray(puzzleFilename)
 	puzzleArrayTmp = resizeImageArray(puzzleArrayFull, 5).astype(int)
 
 	imageArray1Full = convertImageToArray('waldo-hat-1.png')
@@ -270,7 +273,7 @@ def main():
 		lowestColumn = candidate4[2]
 		imageSize = candidate4[3]
 
-	addBorderAroundWaldo(puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
+	addBorderAroundWaldo(puzzleFilename, puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
 	
 	end = time.time()
 	print('Time: ' + str(end - start))
