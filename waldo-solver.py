@@ -63,9 +63,8 @@ def compareTwoImageArrays(imageArray1, imageArray2, threshold):
 		print("error: images not same size")
 		return
 
-	totalLikeness = 0
+	totalPixelsAlike = 0
 	totalPixels = 0
-	numPixelsAlike = 0
 
 	for row in range(len(imageArray1)):
 		for column in range(len(imageArray1[row])):
@@ -75,18 +74,15 @@ def compareTwoImageArrays(imageArray1, imageArray2, threshold):
 				continue
 
 			totalPixels += 1
-
 			rDifference = math.pow((int(pixel1[0]) - int(pixel2[0])) / 255, 2)
 			gDifference = math.pow((int(pixel1[1]) - int(pixel2[1])) / 255, 2)
 			bDifference = math.pow((int(pixel1[2]) - int(pixel2[2])) / 255, 2)
 			distance = math.sqrt(rDifference + gDifference + bDifference)
 
 			if (distance < threshold):
-				numPixelsAlike += 1
-				totalLikeness += distance
+				totalPixelsAlike += 1
 
-	#print(totalLikeness)
-	return numPixelsAlike / totalPixels
+	return totalPixelsAlike / totalPixels
 
 def getImageChunkFromImageArray(imageArray, startX, startY, size):
 	return imageArray[startX:startX+size, startY:startY+size]
@@ -275,7 +271,7 @@ def main():
 		imageSize = candidate4[3]
 
 	addBorderAroundWaldo(puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
-
+	
 	end = time.time()
 	print('Time: ' + str(end - start))
 
