@@ -223,8 +223,8 @@ def main():
 	#print(compareTwoFilesOfSameSize(sys.argv[1], sys.argv[2]))
 	#compareImageToPuzzle(sys.argv[1], sys.argv[2])
 	
-	threshold = float(sys.argv[3])
-	puzzleArrayFull = convertImageToArray(sys.argv[2])
+	threshold = 0.4
+	puzzleArrayFull = convertImageToArray(sys.argv[1])
 	puzzleArrayTmp = resizeImageArray(puzzleArrayFull, 5).astype(int)
 
 	imageArray1Full = convertImageToArray('waldo-hat-1.png')
