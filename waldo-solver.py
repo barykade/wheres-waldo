@@ -216,7 +216,7 @@ def addBorderAroundWaldo(filename, puzzleArray, rowStart, columnStart, size):
 			puzzleArray[rowStart + x, columnStart + size - 1] = green4D
 
 	img = convertArrayToImage(puzzleArray)
-	img.save('images/' + filename + '_solution.png')
+	img.save('images/' + filename)
 	img.show()
 
 def main():
@@ -227,25 +227,25 @@ def main():
 	puzzleFilename = sys.argv[1]
 
 	threshold = 0.4
-	puzzleArrayFull = convertImageToArray(puzzleFilename)
+	puzzleArrayFull = convertImageToArray('puzzles/' + puzzleFilename)
 	puzzleArrayTmp = resizeImageArray(puzzleArrayFull, 5).astype(int)
 
-	imageArray1Full = convertImageToArray('waldo-hat-1.png')
+	imageArray1Full = convertImageToArray('waldos/waldo-hat-1.png')
 	imageArray1Tmp = resizeImageArray(imageArray1Full, 5).astype(int)
 	contenders = getAllPossibleContendersForComparison(imageArray1Tmp, puzzleArrayTmp, threshold)
 	candidate1 = getLikliestCandidateForComparisonWithContenders(imageArray1Full, puzzleArrayFull, 5, contenders)
 	
-	imageArray2Full = convertImageToArray('waldo-hat-2.png')
+	imageArray2Full = convertImageToArray('waldos/waldo-hat-2.png')
 	imageArray2Tmp = resizeImageArray(imageArray2Full, 5).astype(int)
 	contenders = getAllPossibleContendersForComparison(imageArray2Tmp, puzzleArrayTmp, threshold)
 	candidate2 = getLikliestCandidateForComparisonWithContenders(imageArray2Full, puzzleArrayFull, 5, contenders)
 	
-	imageArray3Full = convertImageToArray('waldo-hat-3.png')
+	imageArray3Full = convertImageToArray('waldos/waldo-hat-3.png')
 	imageArray3Tmp = resizeImageArray(imageArray3Full, 5).astype(int)
 	contenders = getAllPossibleContendersForComparison(imageArray3Tmp, puzzleArrayTmp, threshold)
 	candidate3 = getLikliestCandidateForComparisonWithContenders(imageArray3Full, puzzleArrayFull, 5, contenders)
 	
-	imageArray4Full = convertImageToArray('waldo-hat-4.png')
+	imageArray4Full = convertImageToArray('waldos/waldo-hat-4.png')
 	imageArray4Tmp = resizeImageArray(imageArray4Full, 5).astype(int)
 	contenders = getAllPossibleContendersForComparison(imageArray4Tmp, puzzleArrayTmp, threshold)
 	candidate4 = getLikliestCandidateForComparisonWithContenders(imageArray4Full, puzzleArrayFull, 5, contenders)
@@ -273,7 +273,7 @@ def main():
 		lowestColumn = candidate4[2]
 		imageSize = candidate4[3]
 
-	addBorderAroundWaldo(puzzleFilename, puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
+	addBorderAroundWaldo('solutions/' + puzzleFilename, puzzleArrayFull, lowestRow, lowestColumn - 10, imageSize + 20)
 	
 	end = time.time()
 	print('Time: ' + str(end - start))
